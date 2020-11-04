@@ -36,14 +36,17 @@
 		}
 
 		public function index($id){
-			// $user = User::findOrFail($id);
-			$user =User::where('userid', $id)->first();
-			if($user){
+			
+			$user = User::findOrFail($id);
+			return $this->successResponse($user);
+			
+			//$user =User::where('userid', $id)->first();
+			/* if($user){
 				return $this->successResponse($user);
 			}
 			{
 				return $this->errorResponse('User ID Does Not Exits', Response::HTTP_NOT_FOUND);
-			}
+			} */
 			
 		}
 
@@ -55,9 +58,21 @@
 				// 'gender' => 'required|in:Male,Female'
 			];
 			$this->validate($request, $rules);
-			$user = user::where('userid', $id)->first();
+			$user = User::findOrFail($id);
+			//$user = User::where('userid', $id)->first();
 
-			if($user){
+			$user->fill($request->all());
+
+			// if no changes happen
+			if($user->isClean()) {
+				return $this->errorResponse('At least one value must change', Response::HTTP_UNPROCESSABLE_ENTITY);
+			}
+			$user->save();
+			return $this->successResponse($user);	
+			
+			
+			
+			/* if($user){
 				$user->fill($request->all());
 				
 				if($user->isClean()) {
@@ -68,19 +83,26 @@
 			}
 			{
 				return $this->errorResponse('User ID Does Not Exists', Response::HTTP_NOT_FOUND);
-			}
+			} */
 		}
 
 		public function delete($id){
-			$user = user::where('userid', $id)->first();
+			//$user = user::where('userid', $id)->first();
+
+			$user = User::findOrFail($id);
+			$user->delete();
+			return $this->errorResponse('User ID Does Not Exists', Response::HTTP_NOT_FOUND);
 			
-			if($user){
+			
+			
+			
+			/* if($user){
 				$user->delete();
 				return $this->successResponse($user);
 			}
 			{
 				return $this->errorResponse('User ID Does NOT Exists', Response::HTTP_NOT_FOUND);
-			}
+			} */
 		}
 		
 
