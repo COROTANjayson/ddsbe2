@@ -91,7 +91,7 @@
 
 			$user = User::findOrFail($id);
 			$user->delete();
-			return $this->errorResponse('User ID Does Not Exists', Response::HTTP_NOT_FOUND);
+			return $this->successResponse($user);
 			
 			
 			
