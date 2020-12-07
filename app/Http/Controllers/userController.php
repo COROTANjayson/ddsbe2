@@ -1,9 +1,12 @@
 <?php
 	namespace App\Http\Controllers;
 	
+	use App\Models\User; 
+	use App\Models\UserJob; //added
+
 	use Illuminate\Http\Request;
 	use Illuminate\Http\Response;
-	use App\Models\User;  
+	 
 	use App\Traits\ApiResponser; 
 	use DB; 
 
@@ -25,11 +28,15 @@
 		public function add(Request $request){
 			$rules = [
 				'username' => 'required|max:20',
-				'password' => 'required|max:20'
+				'password' => 'required|max:20',
+				'jobid' => 'required|numeric|min:1|mot_in:0',  
 			];
 
 			$this->validate($request, $rules);
 
+			
+			// validate if Jobid is found in the table tbluserjob
+			$userjob = UserJob::findOrFail($request->jobid);  //added
 			$user = User::create($request->all());
 
 			return $this->successResponse($user, Response::HTTP_CREATED);
@@ -54,10 +61,14 @@
 
 			$rules = [
 				'username' => 'required|max:20',
-				'password' => 'required|max:20'
+				'password' => 'required|max:20',
 				// 'gender' => 'required|in:Male,Female'
+				'jobid' => 'required|numeric|min:1|mot_in:0',  //added
 			];
 			$this->validate($request, $rules);
+			
+			$userjob = UserJob::findOrFail($request->jobid); //added 
+			
 			$user = User::findOrFail($id);
 			//$user = User::where('userid', $id)->first();
 
